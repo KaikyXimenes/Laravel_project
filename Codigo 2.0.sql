@@ -1,0 +1,72 @@
+CREATE TABLE usuarios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
+    senha VARCHAR(255),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE cidades (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255),
+    estado VARCHAR(50),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE enderecos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT,
+    rua VARCHAR(255),
+    numero VARCHAR(50),
+    complemento VARCHAR(255),
+    bairro VARCHAR(255),
+    cidade_id INT,
+    cep VARCHAR(20),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (cidade_id) REFERENCES cidades(id)
+);
+
+CREATE TABLE produtos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255),
+    descricao TEXT,
+    preco DECIMAL(10,2),
+    estoque INT,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE cupons (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    codigo VARCHAR(50) UNIQUE,
+    descricao TEXT,
+    desconto DECIMAL(5,2),
+    expiracao TIMESTAMP,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE transacoes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    usuario_id INT,
+    cupom_id INT,
+    status VARCHAR(50),
+    total DECIMAL(10,2),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (cupom_id) REFERENCES cupons(id)
+);
+
+CREATE TABLE transacoes_itens (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    transacao_id INT,
+    produto_id INT,
+    quantidade INT,
+    FOREIGN KEY (transacao_id) REFERENCES transacoes(id),
+    FOREIGN KEY (produto_id) REFERENCES produtos(id)
+);
